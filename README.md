@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DICOM Viewer
 
-## Getting Started
+A **DICOM Viewer** built with **React (Next.js) and Cornerstone.js** to display DICOM images. This application allows users to upload DICOM files, view multiple frames, zoom in and out, and see metadata associated with the DICOM image.
 
-First, run the development server:
+## Features 🚀
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- 📂 **DICOM File Upload** – Load `.dcm` files easily.
+- 📸 **Multi-frame Support** – Navigate through multiple frames in a DICOM file.
+- 🔍 **Zoom In & Zoom Out** – Adjust image scaling for better viewing.
+- ℹ️ **DICOM Metadata Extraction** – View essential metadata like resolution, modality, window width, and more.
+- 🎯 **User-friendly UI** – Built with Tailwind CSS for a clean and intuitive design.
+
+---
+
+## Getting Started 🚀
+
+### 1️⃣ Prerequisites
+Ensure you have the following installed:
+- **Node.js** (>= 16.x)
+- **Yarn** or **npm**
+
+### 2️⃣ Clone the Repository
+```sh
+git clone https://github.com/VishalChauhan562/dicom-project.git
+cd dicom-viewer
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3️⃣ Install Dependencies
+```sh
+yarn install
+# OR
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 4️⃣ Start the Development Server
+```sh
+yarn dev
+# OR
+npm run dev
+```
+The app will be available at **http://localhost:3000**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## How to Use 📖
 
-To learn more about Next.js, take a look at the following resources:
+1. Click on the **"Choose File"** button to upload a `.dcm` file.
+2. The image will be displayed in the viewer.
+3. If the file has multiple frames, use the **slider** to navigate through frames.
+4. Use the **"Zoom In"** and **"Zoom Out"** buttons to adjust the view.
+5. Metadata related to the DICOM image will be displayed in a table.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Technologies Used 🛠️
+- **React (Next.js)**
+- **Cornerstone.js** (DICOM Image Rendering)
+- **Tailwind CSS** (UI Styling)
+- **TypeScript** (Static Typing)
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
