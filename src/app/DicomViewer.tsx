@@ -10,8 +10,7 @@ const DicomViewer = () => {
   const [currentFrame, setCurrentFrame] = useState(0);
   const [totalFrames, setTotalFrames] = useState(1);
   const imageIdsRef = useRef<string[]>([]);
-  let dataSetRef = useRef<any>(null);
-  const [zoomLevel, setZoomLevel] = useState(1); // Zoom state
+  const dataSetRef = useRef<unknown | null>(null); // Fixed typing
 
   useEffect(() => {
     const loadCornerstone = async () => {
@@ -34,9 +33,12 @@ const DicomViewer = () => {
 
   const extractMetadata = (frameIndex = 0) => {
     if (!dataSetRef.current) return;
-    const dataSet = dataSetRef.current;
+    const dataSet = dataSetRef.current as {
+      string: (tag: string) => string | undefined;
+      uint16: (tag: string) => number | undefined;
+    }; // Safe type assertion
 
-    const metadata = {
+    const metadata: Record<string, string> = {
       "Transfer Syntax": dataSet.string("x00020010") || "N/A",
       SOPClassUID: dataSet.string("x00080016") || "N/A",
       SOPInstanceUID: dataSet.string("x00080018") || "N/A",
@@ -72,10 +74,13 @@ const DicomViewer = () => {
       if (!e.target?.result) return;
       const arrayBuffer = e.target.result as ArrayBuffer;
       const byteArray = new Uint8Array(arrayBuffer);
-      const dataSet = dicomParser.parseDicom(byteArray);
+      const dataSet = dicomParser.parseDicom(byteArray) as {
+        intString: (tag: string) => string | undefined;
+      };
       dataSetRef.current = dataSet;
 
-      const frames = dataSet.intString("x00280008") || 1;
+      const frames = parseInt(dataSet.intString("x00280008") || "1", 10);
+
       setTotalFrames(frames);
       setCurrentFrame(0);
 
@@ -89,13 +94,16 @@ const DicomViewer = () => {
       if (!element) return;
 
       if (
-        !cornerstone.getEnabledElements().some((el) => el.element === element)
+        !cornerstone
+          .getEnabledElements()
+          .some((el: { element: HTMLElement }) => el.element === element)
       ) {
         cornerstone.enable(element);
       }
 
       cornerstone.loadImage(imageIdsRef.current[0]).then((image) => {
-        cornerstone.displayImage(element, image);
+        const loadedImage = image as cornerstone.Image; // ✅ Type assertion
+        cornerstone.displayImage(element, loadedImage);
         extractMetadata(0);
       });
     };
@@ -112,36 +120,15 @@ const DicomViewer = () => {
 
       const cornerstone = (await import("cornerstone-core")).default;
       cornerstone.loadImage(imageIdsRef.current[newFrame]).then((image) => {
+        const loadedImage = image as unknown as cornerstone.Image; // ✅ Type assertion
+
         const element = elementRef.current;
         if (!element) return;
-        cornerstone.displayImage(element, image);
+
+        cornerstone.displayImage(element, loadedImage);
         extractMetadata(newFrame);
       });
     }
-  };
-
-  // Zoom in functionality
-  const handleZoomIn = async () => {
-    const cornerstone = (await import("cornerstone-core")).default;
-    const element = elementRef.current;
-    if (!element) return;
-
-    const viewport = cornerstone.getViewport(element);
-    viewport.scale *= 1.2; // Increase scale by 20%
-    setZoomLevel(viewport.scale);
-    cornerstone.setViewport(element, viewport);
-  };
-
-  // Zoom out functionality
-  const handleZoomOut = async () => {
-    const cornerstone = (await import("cornerstone-core")).default;
-    const element = elementRef.current;
-    if (!element) return;
-
-    const viewport = cornerstone.getViewport(element);
-    viewport.scale *= 0.8; // Decrease scale by 20%
-    setZoomLevel(viewport.scale);
-    cornerstone.setViewport(element, viewport);
   };
 
   return (
@@ -151,7 +138,6 @@ const DicomViewer = () => {
       </h1>
 
       <div className="flex flex-col md:flex-row gap-6">
-        {/* Left Side - DICOM Viewer */}
         <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow-md w-full md:w-1/2">
           <input
             type="file"
@@ -166,21 +152,6 @@ const DicomViewer = () => {
             className="border border-gray-400 bg-black rounded-lg"
             style={{ width: "512px", height: "512px" }}
           />
-
-          <div className="flex gap-4 mt-4">
-            <button
-              onClick={handleZoomIn}
-              className="px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600"
-            >
-              Zoom In
-            </button>
-            <button
-              onClick={handleZoomOut}
-              className="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600"
-            >
-              Zoom Out
-            </button>
-          </div>
 
           {totalFrames > 1 && (
             <div className="mt-4 w-full text-center">
@@ -199,7 +170,6 @@ const DicomViewer = () => {
           )}
         </div>
 
-        {/* Right Side - Metadata */}
         <div className="flex flex-col bg-white p-4 rounded-lg shadow-md w-full md:w-1/2">
           <h2 className="text-2xl font-semibold mb-4 text-gray-700">
             DICOM Metadata
