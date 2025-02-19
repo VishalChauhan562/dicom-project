@@ -131,6 +131,28 @@ const DicomViewer = () => {
     }
   };
 
+  // Function to zoom in
+  const handleZoomIn = async () => {
+    const cornerstone = (await import("cornerstone-core")).default;
+    const element = elementRef.current;
+    if (!element) return;
+
+    const viewport = cornerstone.getViewport(element);
+    viewport.scale *= 1.2; // Increase scale by 20%
+    cornerstone.setViewport(element, viewport);
+  };
+
+  // Function to zoom out
+  const handleZoomOut = async () => {
+    const cornerstone = (await import("cornerstone-core")).default;
+    const element = elementRef.current;
+    if (!element) return;
+
+    const viewport = cornerstone.getViewport(element);
+    viewport.scale *= 0.8; // Decrease scale by 20%
+    cornerstone.setViewport(element, viewport);
+  };
+
   return (
     <div className="max-w-6xl mx-auto p-6 bg-gray-100 rounded-lg shadow-lg">
       <h1 className="text-3xl font-bold text-center mb-6 text-blue-600">
@@ -152,6 +174,21 @@ const DicomViewer = () => {
             className="border border-gray-400 bg-black rounded-lg"
             style={{ width: "512px", height: "512px" }}
           />
+
+          <div className="flex gap-4 mt-4">
+            <button
+              onClick={handleZoomIn}
+              className="px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600"
+            >
+              Zoom In
+            </button>
+            <button
+              onClick={handleZoomOut}
+              className="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600"
+            >
+              Zoom Out
+            </button>
+          </div>
 
           {totalFrames > 1 && (
             <div className="mt-4 w-full text-center">
