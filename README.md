@@ -1,4 +1,4 @@
-# DICOM Viewer  dicom-project.vercel.app
+# DICOM Viewer  **dicom-project.vercel.app
 
 A **DICOM Viewer** built with **React (Next.js) and Cornerstone.js** to display DICOM images. This application allows users to upload DICOM files, view multiple frames, zoom in and out, and see metadata associated with the DICOM image.
 
