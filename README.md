@@ -1,6 +1,11 @@
-# DICOM Viewer
+# DICOM Viewer  
+
+#Live
+https://dicom-project-00.vercel.app/
 
 A **DICOM Viewer** built with **React (Next.js) and Cornerstone.js** to display DICOM images. This application allows users to upload DICOM files, view multiple frames, zoom in and out, and see metadata associated with the DICOM image.
+
+To test the app collect the sample files from here https://rubomedical.com/dicom_files/index.html
 
 ## Features 🚀
 
